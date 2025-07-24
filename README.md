@@ -4,7 +4,7 @@ El siguiente procedimiento asegura que  el análisis de predicción binaria medi
 
 ## I. Aseguramiento de la calidad de los datos
 
-En esta sección se abordan las prácticas esenciales para asegurar la calidad de los datos que utilizarás en tu análisis predictivo. La gestión de la calidad de los datos es el primer paso crítico en cualquier pipeline de ciencia de datos, ya que la precisión y la fiabilidad de los modelos dependen en gran medida de la integridad, limpieza y consistencia de los datos de entrada. Aquí aprenderás a eliminar registros duplicados, gestionar valores atípicos y nulos, y validar los datos utilizando herramientas especializadas. Esto te permitirá preparar un dataset robusto y confiable para los siguientes pasos del análisis.
+En esta sección se abordan las prácticas esenciales para asegurar la calidad de los datos que se utilizarás en el análisis predictivo. La gestión de la calidad de los datos es el primer paso crítico en cualquier pipeline de ciencia de datos, ya que la precisión y la fiabilidad de los modelos dependen en gran medida de la integridad, limpieza y consistencia de los datos de entrada. Aquí aprenderás a eliminar registros duplicados, gestionar valores atípicos y nulos, y validar los datos utilizando herramientas especializadas. Esto te permitirá preparar un dataset robusto y confiable para los siguientes pasos del análisis.
 
 ### I.1. Limpieza y preprocesamiento de datos con Pandas
 
