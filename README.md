@@ -11,7 +11,7 @@ En esta sección se abordan las prácticas esenciales para asegurar la calidad d
 En este apartado se explica cómo realizar la limpieza y el preprocesamiento de los datos utilizando la biblioteca Pandas de Python. Este proceso incluye la detección y eliminación de registros duplicados, el tratamiento de valores atípicos (outliers) que pueden distorsionar el análisis, y el manejo de datos faltantes mediante su eliminación o imputación. Además, se asegura la consistencia de los tipos de datos para cada columna, lo que es esencial para evitar problemas en las etapas posteriores de modelado y análisis.
 
 ```
-python
+
 
 import pandas as pd  # Importa la librería pandas para manejo de datos
 
@@ -21,7 +21,7 @@ df = pd.read_csv(data_path)                                             # Carga 
 ```
 
 ```
-python
+
 
 before = len(df)                                                        # Guarda el número de filas antes de eliminar duplicados
 df = df.drop_duplicates()                                               # Elimina filas duplicadas
@@ -30,13 +30,13 @@ print(f"Removed {before - after} duplicate records.")                   # Imprim
 ```
 
 ```
-python
+
 
 print(df.isnull().sum())  # Muestra la cantidad de valores nulos por columna
 ```
 
 ```
-python
+
 
 # Drop rows with missing target
 df = df.dropna(subset=['target_column'])                                # Elimina filas donde la columna objetivo está vacía
@@ -48,7 +48,7 @@ for col in df.select_dtypes(include='number'):                          # Itera 
 ```
 
 ```
-python
+
 
 from scipy.stats import zscore  # Importa zscore para detectar outliers
 
@@ -58,7 +58,7 @@ df = df[(z_scores.abs() < 3).all(axis=1)]                               # Filtra
 ```
 
 ```
-python
+
 
 for col in numeric_cols:  # Itera sobre columnas numéricas
     Q1 = df[col].quantile(0.25)  # Calcula el primer cuartil
@@ -68,7 +68,7 @@ for col in numeric_cols:  # Itera sobre columnas numéricas
 ```
 
 ```
-python
+
 
 # Asegurar los tipos de datos correctos
 
@@ -92,7 +92,7 @@ great_expectations suite new                                            # Crea u
 ```
 
 ```
-python
+
 
 import great_expectations as ge                                         # Importa la librería Great Expectations
 
@@ -101,7 +101,7 @@ batch = context.sources.pandas_default.read_csv(data_path)              # Lee lo
 ```
 
 ```
-python
+
 
 validator = context.get_validator(                                      # Crea un validador para los datos
     batch=batch,                                                        # Usa el lote de datos cargado
@@ -114,7 +114,7 @@ validator.expect_column_values_to_match_regex('email', r".+@.+\..+")    # Espera
 ```
 
 ```
-python
+
 
 results = validator.validate()                                          # Ejecuta la validación de los datos
 print(results)                                                          # Imprime los resultados de la validación
@@ -137,7 +137,7 @@ Esta sección se centra en garantizar que el manejo y procesamiento de los datos
 En este apartado se describen las estrategias para verificar y asegurar que los datos y procesos cumplen con las regulaciones relevantes. Esto incluye identificar la normativa aplicable (por ejemplo, GDPR para protección de datos personales en la Unión Europea, HIPAA para datos de salud en Estados Unidos, PCI-DSS para datos de tarjetas de pago), aplicar técnicas de minimización y anonimización de datos sensibles, y registrar el consentimiento y acceso a datos de los usuarios. Además, se recomienda aprovechar servicios de AWS como KMS para cifrado y IAM para gestión de accesos, fortaleciendo la seguridad y la trazabilidad del sistema.
 
 ```
-python
+
 
 # Ejemplo: Enmascaramiento de información personal identificable (PII)
 
@@ -146,7 +146,7 @@ if 'ssn' in df.columns:                                                 # Si exi
 ```
 
 ```
-python
+
 
 # Eliminar datos de usuario a petición
 
@@ -155,7 +155,7 @@ df = df[df['user_id'] != user_id_to_remove]                             # Elimin
 ```
 
 ```
-python
+
 
 import logging  # Importa la librería de logging
 
@@ -170,7 +170,7 @@ logging.info(f"Accessed user data for analysis at {datetime.utcnow()}")  # Regis
 En esta parte se muestra cómo llevar un registro detallado y transparente de todas las operaciones realizadas sobre los datos, lo que es fundamental para auditorías de cumplimiento y para la reproducibilidad del análisis. Se explica cómo utilizar la biblioteca de logging de Python para registrar cada etapa del pipeline de procesamiento, cómo versionar tanto los datos como el código, y cómo generar documentación que detalle el flujo y la transformación de la información. Además, se muestra cómo integrar PySpark para escalar el procesamiento a grandes volúmenes de datos y cómo documentar cada paso del proceso para facilitar revisiones y auditorías externas.
 
 ```
-python
+
 
 import logging  # Importa logging para auditoría
 from datetime import datetime                                           # Importa datetime para marcar tiempo
@@ -190,7 +190,7 @@ log_step("Performed outlier removal.")                                  # Regist
 - Track data versions using tools like **DVC** or with S3 versioning.   # Versiona datos con DVC o S3
 
 ```
-python
+
 
 from pyspark.sql import SparkSession                                    # Importa SparkSession para PySpark
 
@@ -217,7 +217,7 @@ log_step("Converted Spark DataFrame to pandas DataFrame")               # Regist
 Una vez que los datos han sido limpiados, validados y cumplen con la normativa, puedes proceder al entrenamiento del modelo. En este apartado se muestra cómo preparar los datos para el entrenamiento, dividiendo en conjuntos de entrenamiento y prueba, y cómo inicializar y ajustar un modelo XGBoost de clasificación binaria. Este paso es esencial para obtener predicciones precisas y confiables, y debe realizarse únicamente después de asegurar la calidad y el cumplimiento de los datos.
 
 ```
-python
+
 
 import xgboost as xgb                                                   # Importa la librería XGBoost
 from sklearn.model_selection import train_test_split                    # Importa función para dividir datos
