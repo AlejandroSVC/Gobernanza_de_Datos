@@ -69,153 +69,131 @@ df['category_col'] = df['category_col'].astype('category')              # Convie
 
 ### I.2. Validación de datos mediante la biblioteca “Great Expectations” de Python
 
-Aquí aprenderás a utilizar la librería Great Expectations para validar la calidad y estructura de los datos. La validación de datos consiste en definir y verificar expectativas sobre el contenido, formato y valores permitidos en cada columna, asegurando que los datos cumplen reglas de negocio y estándares de calidad antes de ser usados en el modelado. Esto incluye, por ejemplo, comprobar que no haya valores nulos en ciertas columnas, que los valores numéricos estén dentro de un rango lógico o que los datos de correo electrónico tengan el formato adecuado. Esta práctica ayuda a prevenir errores y garantiza la reproducibilidad y confiabilidad del proceso analítico.
+En esta sección se utiliza la librería Great Expectations para validar la calidad y estructura de los datos. La validación de los datos consiste en definir y verificar expectativas sobre el contenido, formato y valores permitidos en cada columna, asegurando que los datos cumplen reglas y estándares de calidad antes de ser usados en el modelado. Esto incluye, por ejemplo, comprobar que no haya valores nulos, que los valores numéricos estén dentro de un rango lógico o que los datos de correo electrónico tengan el formato adecuado. Esta práctica ayuda a prevenir errores y garantiza la reproducibilidad y confiabilidad del proceso analítico.
 
 ```bash
-great_expectations init                                                 # Inicializa Great Expectations en el proyecto
+great_expectations init                                                 # Inicializar Great Expectations
 ```
 
 ```bash
-great_expectations suite new                                            # Crea un nuevo conjunto de expectativas
+great_expectations suite new                                            # Crear un nuevo conjunto de expectativas
 ```
 
 ```
+import great_expectations as ge                                         # Importar la librería Great Expectations
 
-
-import great_expectations as ge                                         # Importa la librería Great Expectations
-
-context = ge.get_context()                                              # Obtiene el contexto de validación
-batch = context.sources.pandas_default.read_csv(data_path)              # Lee los datos usando el contexto de pandas
+context = ge.get_context()                                              # Obtener el contexto de validación
+batch = context.sources.pandas_default.read_csv(data_path)              # Leer los datos usando el contexto de pandas
 ```
 
 ```
-
-
-validator = context.get_validator(                                      # Crea un validador para los datos
-    batch=batch,                                                        # Usa el lote de datos cargado
-    expectation_suite_name="your_suite"                                 # Nombre del conjunto de expectativas
+validator = context.get_validator(                                      # Crear un validador para los datos
+    batch=batch,                                                        # Usar el lote de datos cargado
+    expectation_suite_name="your_suite"                                 # Dar nombre al conjunto de expectativas
 )
 
-validator.expect_column_values_to_not_be_null('target_column')          # Espera que la columna objetivo no tenga nulos
-validator.expect_column_values_to_be_between('age', min_value=18, max_value=99)  # Espera que 'age' esté entre 18 y 99
-validator.expect_column_values_to_match_regex('email', r".+@.+\..+")    # Espera que 'email' cumpla con el patrón de correo
+validator.expect_column_values_to_not_be_null('target_column')          # Comprobar que la columna objetivo no tenga nulos
+validator.expect_column_values_to_be_between('age', min_value=18, max_value=99)  # Comprobar que edad ('age') esté entre 18 y 99
+validator.expect_column_values_to_match_regex('email', r".+@.+\..+")    # Comprobar que 'email' cumpla con el formato adecuado
 ```
 
 ```
-
-
-results = validator.validate()                                          # Ejecuta la validación de los datos
-print(results)                                                          # Imprime los resultados de la validación
+results = validator.validate()                                          # Ejecutar la validación de los datos
+print(results)                                                          # Mostrar los resultados de la validación
 ```
 
 ```bash
-great_expectations docs build                                           # Genera documentación visual de los resultados
+great_expectations docs build                                           # Generar documentación visual de los resultados
 
 # Ver los documentos generados en el navegador
 ```
 
 ---
-
 ## II. Cumplimiento de los datos
 
-Esta sección se centra en garantizar que el manejo y procesamiento de los datos cumplan con las normativas y regulaciones vigentes, como GDPR, HIPAA o PCI-DSS. El cumplimiento normativo implica proteger la privacidad de los usuarios, restringir el acceso a información sensible, y asegurar que los datos se gestionen de acuerdo con los derechos y expectativas de los titulares. Aquí aprenderás a identificar qué normativas aplican a tu caso, cómo minimizar y anonimizar datos sensibles, y cómo implementar mecanismos para respetar los derechos de los usuarios, como la eliminación o anonimización de su información bajo requerimiento legal.
+Esta sección se centra en garantizar que el manejo y procesamiento de los datos cumplan con las normativas y regulaciones vigentes, tales como GDPR para protección de datos personales en la Unión Europea, HIPAA para datos de salud en Estados Unidos, PCI-DSS para datos de tarjetas de pago. El cumplimiento normativo implica proteger la privacidad de los usuarios, restringir el acceso a información sensible, y asegurar que los datos se gestionen de acuerdo con los derechos y expectativas de los titulares. Se debe identificar qué normativas aplicar a cada caso, cómo minimizar y anonimizar datos sensibles, y cómo implementar mecanismos para respetar los derechos de los usuarios, como la eliminación o anonimización de su información bajo requerimiento legal.
 
 ### II.1. Verificaciones de cumplimiento normativo
 
-En este apartado se describen las estrategias para verificar y asegurar que los datos y procesos cumplen con las regulaciones relevantes. Esto incluye identificar la normativa aplicable (por ejemplo, GDPR para protección de datos personales en la Unión Europea, HIPAA para datos de salud en Estados Unidos, PCI-DSS para datos de tarjetas de pago), aplicar técnicas de minimización y anonimización de datos sensibles, y registrar el consentimiento y acceso a datos de los usuarios. Además, se recomienda aprovechar servicios de AWS como KMS para cifrado y IAM para gestión de accesos, fortaleciendo la seguridad y la trazabilidad del sistema.
+En este apartado se describen las estrategias para verificar y asegurar que los datos y procesos cumplen con las regulaciones relevantes. Esto incluye identificar la normativa aplicable (por ejemplo, GDPR, HIPAA, o PCI-DSS), aplicar técnicas de minimización y anonimización de datos sensibles, y registrar el consentimiento y acceso a datos de los usuarios. Además, se recomienda aprovechar servicios de AWS como KMS para cifrado y IAM para gestión de accesos, fortaleciendo la seguridad y la trazabilidad del sistema.
 
 ```
-
-
 # Ejemplo: Enmascaramiento de información personal identificable (PII)
 
-if 'ssn' in df.columns:                                                 # Si existe la columna de número de seguro social
-    df['ssn'] = df['ssn'].apply(lambda x: str(x)[:2] + "****" if pd.notnull(x) else x)  # Enmascara el valor para privacidad
+if 'ssn' in df.columns:                                                                 # Si existe la columna de número de seguro social
+    df['ssn'] = df['ssn'].apply(lambda x: str(x)[:2] + "****" if pd.notnull(x) else x)  # Enmascarar el valor para privacidad
 ```
 
 ```
-
-
 # Eliminar datos de usuario a petición
 
 user_id_to_remove = "user123"                                           # ID del usuario a eliminar
-df = df[df['user_id'] != user_id_to_remove]                             # Elimina filas del usuario solicitado
+df = df[df['user_id'] != user_id_to_remove]                             # Eliminar filas del usuario solicitado
 ```
 
 ```
+import logging                                                           # Importar la biblioteca logging
 
-
-import logging  # Importa la librería de logging
-
-logging.basicConfig(filename='data_access.log', level=logging.INFO)      # Configura el archivo y nivel de log
-logging.info(f"Accessed user data for analysis at {datetime.utcnow()}")  # Registra acceso a datos de usuario
+logging.basicConfig(filename='data_access.log', level=logging.INFO)      # Configurar el archivo y nivel de log
+logging.info(f"Accessed user data for analysis at {datetime.utcnow()}")  # Registrar el acceso a datos de usuario
 ```
 
 ---
-
 ### II.2. Registros de auditoría y documentación
 
-En esta parte se muestra cómo llevar un registro detallado y transparente de todas las operaciones realizadas sobre los datos, lo que es fundamental para auditorías de cumplimiento y para la reproducibilidad del análisis. Se explica cómo utilizar la biblioteca de logging de Python para registrar cada etapa del pipeline de procesamiento, cómo versionar tanto los datos como el código, y cómo generar documentación que detalle el flujo y la transformación de la información. Además, se muestra cómo integrar PySpark para escalar el procesamiento a grandes volúmenes de datos y cómo documentar cada paso del proceso para facilitar revisiones y auditorías externas.
+En este apartado se muestra cómo llevar un registro detallado y transparente de todas las operaciones realizadas sobre los datos, lo que es fundamental para auditorías de cumplimiento y para la reproducibilidad del análisis. Se explica cómo utilizar la biblioteca de logging de Python para registrar cada etapa del pipeline de procesamiento, cómo versionar tanto los datos como el código, y cómo generar documentación que detalle el flujo y la transformación de la información. Además, se muestra cómo integrar PySpark para escalar el procesamiento a grandes volúmenes de datos y cómo documentar cada paso del proceso para facilitar revisiones y auditorías externas.
+
+```
+import logging                                                           # Importar logging para auditoría
+from datetime import datetime                                            # Importar datetime para registrar fecha y hora
+
+logging.basicConfig(filename='pipeline_audit.log', level=logging.INFO)   # Configurar un archivo de auditoría
+
+def log_step(step_desc):                                                 # Definir una función para registrar pasos
+    logging.info(f"{datetime.utcnow().isoformat()} - {step_desc}")       # Registrar la descripción con fecha/hora
+
+log_step("Loaded data from S3.")                                         # Registrar la carga de los datos
+log_step("Removed duplicates.")                                          # Registrar la eliminación de duplicados
+log_step("Imputed missing values.")                                      # Registrar la imputación de nulos
+log_step("Performed outlier removal.")                                   # Registrar la eliminación de outliers
+```
+
+- Store scripts and configs in **Git**.                                  # Guardar código y configuración en Git
+- Track data versions using tools like **DVC** or with S3 versioning.    # Versionar datos con DVC o S3
 
 ```
 
+from pyspark.sql import SparkSession                                     # Importar SparkSession para PySpark
 
-import logging  # Importa logging para auditoría
-from datetime import datetime                                           # Importa datetime para marcar tiempo
+spark = SparkSession.builder.appName('DataGovernance').getOrCreate()     # Iniciar Spark con nombre de la aplicación
+df_spark = spark.read.csv('s3://your-bucket/data.csv', header=True, inferSchema=True)      # Leer datos desde S3 en Spark
 
-logging.basicConfig(filename='pipeline_audit.log', level=logging.INFO)  # Configura archivo de auditoría
-
-def log_step(step_desc):                                                # Define una función para registrar pasos
-    logging.info(f"{datetime.utcnow().isoformat()} - {step_desc}")      # Registra la descripción con fecha/hora
-
-log_step("Loaded data from S3.")                                        # Registra carga de datos
-log_step("Removed duplicates.")                                         # Registra eliminación de duplicados
-log_step("Imputed missing values.")                                     # Registra imputación de nulos
-log_step("Performed outlier removal.")                                  # Registra eliminación de outliers
-```
-
-- Store scripts and configs in **Git**.                                 # Guarda código y configuración en Git
-- Track data versions using tools like **DVC** or with S3 versioning.   # Versiona datos con DVC o S3
-
-```
-
-
-from pyspark.sql import SparkSession                                    # Importa SparkSession para PySpark
-
-spark = SparkSession.builder.appName('DataGovernance').getOrCreate()    # Inicia Spark con nombre de la aplicación
-df_spark = spark.read.csv('s3://your-bucket/data.csv', header=True, inferSchema=True)  # Lee datos desde S3 en Spark
-
-log_step("Loaded data into Spark DataFrame")                            # Registra carga en Spark
+log_step("Loaded data into Spark DataFrame")                             # Registrar carga en Spark
 
 # Convertir a Pandas para su posterior procesamiento si es necesario
 
-df = df_spark.toPandas()                                                # Convierte DataFrame Spark a pandas
-log_step("Converted Spark DataFrame to pandas DataFrame")               # Registra conversión
+df = df_spark.toPandas()                                                 # Convertir DataFrame Spark a pandas
+log_step("Converted Spark DataFrame to pandas DataFrame")                # Registrar conversión
 ```
 
-- Generate **Markdown** or **HTML** audit reports.                      # Genera reportes de auditoría en Markdown o HTML
-- Use tools like **Jupyter Notebooks** for reproducibility and sharing  # Usa Jupyter para reproducibilidad y compartir
+- Generate **Markdown** or **HTML** audit reports.                       # Generar reportes de auditoría en Markdown o HTML
+- Use tools like **Jupyter Notebooks** for reproducibility and sharing   # Usar Jupyter para reproducibilidad y compartir
 
 ---
-
-
-
-## III. Próximos pasos: Entrenamiento del modelo (ejemplo de XGBoost)
+## III. Entrenamiento del modelo XGBoost
 
 Una vez que los datos han sido limpiados, validados y cumplen con la normativa, puedes proceder al entrenamiento del modelo. En este apartado se muestra cómo preparar los datos para el entrenamiento, dividiendo en conjuntos de entrenamiento y prueba, y cómo inicializar y ajustar un modelo XGBoost de clasificación binaria. Este paso es esencial para obtener predicciones precisas y confiables, y debe realizarse únicamente después de asegurar la calidad y el cumplimiento de los datos.
-
 ```
 
-
-import xgboost as xgb                                                   # Importa la librería XGBoost
-from sklearn.model_selection import train_test_split                    # Importa función para dividir datos
+import xgboost as xgb                                                    # Importar la librería XGBoost
+from sklearn.model_selection import train_test_split                     # Importar función para dividir datos
  
-X = df.drop('target_column', axis=1)                                    # Separa las características (X) eliminando la columna objetivo
-y = df['target_column']                                                 # Selecciona la columna objetivo (y)
+X = df.drop('target_column', axis=1)                                     # Separar las características (X) eliminando la columna objetivo
+y = df['target_column']                                                  # Seleccionar la columna objetivo (y)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  # Divide los datos en entrenamiento y prueba
-model = xgb.XGBClassifier()                                             # Crea un clasificador XGBoost
-model.fit(X_train, y_train)                                             # Entrena el modelo con los datos de entrenamiento
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)   # Dividir los datos en entrenamiento y prueba
+model = xgb.XGBClassifier()                                              # Crear un clasificador XGBoost
+model.fit(X_train, y_train)                                              # Entrenar el modelo con los datos de entrenamiento
 ```
 
 ---
