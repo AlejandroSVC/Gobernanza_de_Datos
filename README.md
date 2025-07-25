@@ -4,25 +4,21 @@ El siguiente procedimiento asegura que  el análisis de predicción binaria medi
 
 ## I. Aseguramiento de la calidad de los datos
 
-En esta sección se abordan las prácticas esenciales para asegurar la calidad de los datos que se utilizarás en el análisis predictivo. La gestión de la calidad de los datos es el primer paso crítico en cualquier pipeline de ciencia de datos, ya que la precisión y la fiabilidad de los modelos dependen en gran medida de la integridad, limpieza y consistencia de los datos de entrada. Aquí aprenderás a eliminar registros duplicados, gestionar valores atípicos y nulos, y validar los datos utilizando herramientas especializadas. Esto te permitirá preparar un dataset robusto y confiable para los siguientes pasos del análisis.
+Esta primera sección desarrolla las prácticas esenciales para asegurar la calidad de los datos que serán utilizados en el análisis predictivo. Ello es esencial en cualquier pipeline de machine learning, ya que la precisión y fiabilidad del modelo depende de la integridad, limpieza y consistencia de los datos de entrada. Se eliminará registros duplicados, se gestionará valores atípicos y nulos, y se validará los datos. Esto permitirá contar con un dataset robusto y confiable para los siguientes pasos del análisis.
 
 ### I.1. Limpieza y preprocesamiento de datos con Pandas
 
-En este apartado se explica cómo realizar la limpieza y el preprocesamiento de los datos utilizando la biblioteca Pandas de Python. Este proceso incluye la detección y eliminación de registros duplicados, el tratamiento de valores atípicos (outliers) que pueden distorsionar el análisis, y el manejo de datos faltantes mediante su eliminación o imputación. Además, se asegura la consistencia de los tipos de datos para cada columna, lo que es esencial para evitar problemas en las etapas posteriores de modelado y análisis.
+En este apartado se realiza la limpieza y preprocesamiento de los datos. Este proceso incluye la detección y eliminación de registros duplicados, el tratamiento de valores atípicos (outliers) que pueden distorsionar el análisis, y el manejo de datos faltantes mediante su eliminación o imputación. Además, se asegura la consistencia de los tipos de datos para cada columna.
 
 ```
-
-
 import pandas as pd  # Importa la librería pandas para manejo de datos
 
-# Ejemplo: Load data from S3 (requires AWS credentials set up)
+# Ejemplo: Cargar datos desde S3 (requiere credenciales AWS)
 data_path = 's3://your-bucket/data.csv'                                 # Ruta del archivo de datos en S3
 df = pd.read_csv(data_path)                                             # Carga el archivo CSV en un DataFrame de pandas
 ```
 
 ```
-
-
 before = len(df)                                                        # Guarda el número de filas antes de eliminar duplicados
 df = df.drop_duplicates()                                               # Elimina filas duplicadas
 after = len(df)                                                         # Guarda el número de filas después de eliminar duplicados
@@ -30,16 +26,12 @@ print(f"Removed {before - after} duplicate records.")                   # Imprim
 ```
 
 ```
-
-
 print(df.isnull().sum())  # Muestra la cantidad de valores nulos por columna
 ```
 
 ```
-
-
-# Drop rows with missing target
-df = df.dropna(subset=['target_column'])                                # Elimina filas donde la columna objetivo está vacía
+# Eliminar filas de la variable 'target' que tengan valores faltantes
+df = df.dropna(subset=['target_column'])
 
 # Imputar valores faltantes (ejemplo: rellenar columnas numéricas con la mediana)
 
@@ -48,28 +40,25 @@ for col in df.select_dtypes(include='number'):                          # Itera 
 ```
 
 ```
+# Valores atípicos (outliers)
+# Identificar como valores atípicos a aquellos que se sitúan fuera de un intervalo de la curva normal
+from scipy.stats import zscore                                          # Importar zscore para detectar outliers
 
-
-from scipy.stats import zscore  # Importa zscore para detectar outliers
-
-numeric_cols = df.select_dtypes(include='number').columns               # Selecciona columnas numéricas
-z_scores = df[numeric_cols].apply(zscore)                               # Calcula el z-score para cada columna numérica
-df = df[(z_scores.abs() < 3).all(axis=1)]                               # Filtra filas donde todos los z-scores absolutos son menores que 3
+numeric_cols = df.select_dtypes(include='number').columns               # Seleccionar columnas numéricas
+z_scores = df[numeric_cols].apply(zscore)                               # Calcular el z-score para cada columna numérica
+df = df[(z_scores.abs() < 3).all(axis=1)]                               # Filtrar filas donde todos los z-scores absolutos sean menores que 3
 ```
 
 ```
-
-
-for col in numeric_cols:  # Itera sobre columnas numéricas
-    Q1 = df[col].quantile(0.25)  # Calcula el primer cuartil
-    Q3 = df[col].quantile(0.75)  # Calcula el tercer cuartil
-    IQR = Q3 - Q1  # Calcula el rango intercuartílico
-    df = df[(df[col] >= Q1 - 1.5 * IQR) & (df[col] <= Q3 + 1.5 * IQR)]  # Filtra outliers
+# Identificar como valores atípicos a aquellos que se sitúan fuera del rango intercuartil
+for col in numeric_cols:                                                # Iterar sobre columnas numéricas
+    Q1 = df[col].quantile(0.25)                                         # Calcular el primer cuartil
+    Q3 = df[col].quantile(0.75)                                         # Calcular el tercer cuartil
+    IQR = Q3 - Q1                                                       # Calcular el rango intercuartil
+    df = df[(df[col] >= Q1 - 1.5 * IQR) & (df[col] <= Q3 + 1.5 * IQR)]  # Filtrar outliers
 ```
 
 ```
-
-
 # Asegurar los tipos de datos correctos
 
 df['date_col'] = pd.to_datetime(df['date_col'])                         # Convierte la columna de fecha al tipo datetime
@@ -79,7 +68,6 @@ df['category_col'] = df['category_col'].astype('category')              # Convie
 ---
 
 ### I.2. Validación de datos mediante la biblioteca “Great Expectations” de Python
-
 
 Aquí aprenderás a utilizar la librería Great Expectations para validar la calidad y estructura de los datos. La validación de datos consiste en definir y verificar expectativas sobre el contenido, formato y valores permitidos en cada columna, asegurando que los datos cumplen reglas de negocio y estándares de calidad antes de ser usados en el modelado. Esto incluye, por ejemplo, comprobar que no haya valores nulos en ciertas columnas, que los valores numéricos estén dentro de un rango lógico o que los datos de correo electrónico tengan el formato adecuado. Esta práctica ayuda a prevenir errores y garantiza la reproducibilidad y confiabilidad del proceso analítico.
 
