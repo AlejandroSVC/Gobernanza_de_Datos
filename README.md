@@ -1,5 +1,7 @@
 # Gobernanza de datos en un análisis de predicción binaria con XGBoost en AWS, usando Python y PySpark.
 
+![banner_datagovernance](docs/assets/images/banner_datagovernance.jpg)
+
 El siguiente procedimiento asegura que  el análisis de predicción binaria mediante XGBoost en AWS cumpla con buenas prácticas de calidad y gobernanza de datos.
 
 ## I. Aseguramiento de la calidad de los datos
