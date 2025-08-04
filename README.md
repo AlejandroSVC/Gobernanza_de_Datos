@@ -20,7 +20,7 @@ Requisitos previos:
     • XGBoost y SHAP instalados.
     • ZenML instalado y configurado.
 
-##  1. Carga de datos y preparación con PySpark 
+##  Sección 1. Carga de datos y preparación con PySpark 
 Esta sección carga los datos desde AWS S3, realiza la limpieza básica y el preprocesamiento necesario para el modelo.
 ```
 from pyspark.sql import SparkSession  # Importar SparkSession para manejar datos distribuidos
@@ -44,7 +44,7 @@ df = df.dropna()  # Eliminar filas con valores nulos
 ```
 pandas_df = df.toPandas()  # Convertir DataFrame de Spark a Pandas
 ```
-##  2. Entrenamiento inicial del modelo XGBoost 
+##  Sección 2. Entrenamiento inicial del modelo XGBoost 
 Se entrena el modelo XGBoost y se guarda el modelo entrenado en S3 para versionado y auditoría.
 ```
 import xgboost as xgb  # Importar XGBoost
@@ -71,7 +71,7 @@ import boto3  # Importar boto3 para AWS
 s3 = boto3.client('s3')  # Cliente de S3
 s3.upload_file("/tmp/modelo_xgb.json", "mi-bucket", "modelos/modelo_xgb_v1.json")  # Subir modelo a S3
 ```
-##  3. Monitoreo continuo y detección de drift 
+##  Sección 3. Monitoreo continuo y detección de drift 
 Implementamos monitoreo automatizado para detectar cambios en los datos (data drift) y el rendimiento (model drift) usando ZenML.
 
 ### Inicializar ZenML y pipeline de monitoreo
@@ -108,7 +108,7 @@ def drift_monitoring_pipeline():  # Definir pipeline de monitoreo
 ```
 drift_monitoring_pipeline()  # Ejecutar monitoreo
 ```
-##  4. Explicabilidad y transparencia (XAI con SHAP) 
+##  Sección 4. Explicabilidad y transparencia (XAI con SHAP) 
 Se utiliza SHAP para explicar las predicciones del modelo y mantener transparencia en la toma de decisiones.
 ```
 import shap  # Importar SHAP para explicabilidad
@@ -120,7 +120,7 @@ shap_values = explainer.shap_values(X)  # Calcular valores SHAP
 ```
 shap.summary_plot(shap_values, X, feature_names=feature_cols)  # Gráfico resumen de importancia de variables
 ```
-##  5. Plan de reentrenamiento y control de versiones 
+##  Sección 5. Plan de reentrenamiento y control de versiones 
 Si se detecta drift o baja performance, el modelo debe ser reentrenado automáticamente, versionando y auditando cada ciclo.
 
 ### Función para reentrenamiento (se puede automatizar con ZenML o AWS Lambda)
@@ -139,7 +139,7 @@ def retrain_model(new_X, new_y):
 if detect_drift(X):  # Si se detecta drift, reentrenar
     retrain_model(X, y)  # Reentrenar con los datos disponibles
 ```
-##  6. Documentación y gobernanza del ciclo de vida 
+##  Sección 6. Documentación y gobernanza del ciclo de vida 
 Se documenta cada etapa, acción y métrica del ciclo de vida del modelo para cumplir con la gobernanza.
 
 ### Documentación estructurada del ciclo de vida del modelo
@@ -158,7 +158,7 @@ def documentar_evento(evento, detalles):
 documentar_evento("Entrenamiento inicial", "Modelo XGBoost v1 entrenado y subido a S3.")  # Documentar entrenamiento
 documentar_evento("Monitoreo", "Pipeline de monitoreo ejecutado. No se detectó drift.")  # Documentar monitoreo
 ```
-##  7. Herramientas y automatización del ciclo de vida 
+##  Sección 7. Herramientas y automatización del ciclo de vida 
 ZenML y AWS se utilizan para versionar, monitorear, alertar y automatizar el ciclo de vida del modelo.
 
 ## Ejemplo de integración de ZenML para versionado y control de pipelines
