@@ -173,14 +173,23 @@ repo.get_pipeline("drift_monitoring_pipeline").run()                            
 ##  CONCLUSIONES 
 
 • Un enfoque de gobernanza proactivo permite detectar desvíos y responder de manera oportuna para mantener la confiabilidad y precisión del modelo.
+
 • La automatización y la trazabilidad son clave: ZenML facilita la gestión de versiones, monitoreo y documentación del ciclo de vida del modelo.
+
 • El uso de SHAP aporta transparencia, permite cumplir regulaciones y genera confianza en los usuarios del modelo.
+
 • La integración con AWS y PySpark permite escalar el pipeline y aprovechar recursos cloud para grandes volúmenes de datos.
+
 • Recomiendo mantener actualizada la documentación y pipelines, y revisar periódicamente las políticas de reentrenamiento y alertas.
 
 Fuentes:
-• https://docs.aws.amazon.com/sagemaker/latest/dg/model•monitor.html
-• https://xgboost.readthedocs.io/
-• https://shap.readthedocs.io/
-• https://docs.zenml.io/
-• https://spark.apache.org/docs/latest/api/python/
+
+https://docs.aws.amazon.com/sagemaker/latest/dg/model•monitor.html
+
+https://xgboost.readthedocs.io/
+
+https://shap.readthedocs.io/
+
+https://docs.zenml.io/
+
+https://spark.apache.org/docs/latest/api/python/
