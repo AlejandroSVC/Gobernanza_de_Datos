@@ -159,7 +159,7 @@ documentar_evento("Entrenamiento inicial", "Modelo XGBoost v1 entrenado y subido
 documentar_evento("Monitoreo", "Pipeline de monitoreo ejecutado. No se detectó drift.")  # Documentar monitoreo
 ```
 ##  Sección 7. Herramientas y automatización del ciclo de vida 
-ZenML y AWS se utilizan para versionar, monitorear, alertar y automatizar el ciclo de vida del modelo.
+ZenML y AWS son utilizados para versionar, monitorear, alertar y automatizar el ciclo de vida del modelo.
 
 ## Ejemplo de integración de ZenML para versionado y control de pipelines
 ```
@@ -170,8 +170,8 @@ repo = Repository()  # Inicializar repositorio ZenML
 ```
 repo.get_pipeline("drift_monitoring_pipeline").run()  # Ejecutar pipeline y registrar artefactos
 ```
-#  CONCLUSIONES 
-"""
+##  CONCLUSIONES 
+
 - Un enfoque de gobernanza proactivo permite detectar desvíos y responder de manera oportuna para mantener la confiabilidad y precisión del modelo.
 - La automatización y la trazabilidad son clave: ZenML facilita la gestión de versiones, monitoreo y documentación del ciclo de vida del modelo.
 - El uso de SHAP aporta transparencia, permite cumplir regulaciones y genera confianza en los usuarios del modelo.
