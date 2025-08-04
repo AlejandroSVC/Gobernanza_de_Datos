@@ -30,7 +30,7 @@ from pyspark.sql.functions import col  # Importar función para manipulación de
 ```
 spark = SparkSession.builder.appName("XGBoostGobernanza").getOrCreate()  # Crear sesión de Spark
 ```
-### Cargar datos desde S3
+### Carga de datos desde S3
 ```
 data_path = "s3a://mi-bucket/datos/dataset.csv"  # Ruta de los datos en S3
 df = spark.read.csv(data_path, header=True, inferSchema=True)  # Leer archivo CSV
